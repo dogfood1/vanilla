@@ -41,6 +41,18 @@ if (!defined('APPLICATION_VERSION')) {
 // Loads the constants
 require PATH_CONF . '/constants.php';
 
+// Set up the dependency injection container.
+$dic = new \Garden\Container\Container();
+Gdn::setContainer($dic);
+
+$dic->setInstance('Garden\Container\Container', $dic)
+    ->rule('Interop\Container\ContainerInterface')
+    ->setAliasOf('Garden\Container\Container')
+
+    ->rule(InjectableInterface::class)
+    ->addCall('setDependencies')
+;
+
 // Install the configuration handler.
 Gdn::factoryInstall(Gdn::AliasConfig, 'Gdn_Configuration');
 
